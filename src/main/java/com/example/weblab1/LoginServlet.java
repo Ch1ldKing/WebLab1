@@ -1,6 +1,5 @@
 package com.example.weblab1;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +14,10 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         // 设置响应类型
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        response.setHeader("Access-Control-Max-Age", "3600");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
@@ -22,7 +25,7 @@ public class LoginServlet extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        // 进行用户验证（此处应替换为实际的验证逻辑）
+        // 进行用户验证
         boolean isValidUser = "admin".equals(username) && "123".equals(password);
 
         try (PrintWriter out = response.getWriter()) {
