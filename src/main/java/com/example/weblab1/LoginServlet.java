@@ -13,7 +13,7 @@ import java.io.PrintWriter;
 public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
         // 设置响应类型
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
