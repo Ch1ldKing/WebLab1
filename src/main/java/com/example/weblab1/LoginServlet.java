@@ -1,64 +1,38 @@
 package com.example.weblab1;
 
-import java.io.BufferedReader;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.PrintWriter;
-import org.json.JSONObject;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
-import jakarta.servlet.ServletException;
 
-import static java.lang.System.console;
-import static java.lang.System.out;
-
-@WebServlet(value = "/LoginServlet")
+@WebServlet(name = "LoginServlet", urlPatterns = {"/LoginServlet"})
 public class LoginServlet extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // 设置响应类型
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        // Read from request
-        StringBuilder buffer = new StringBuilder();
-        BufferedReader reader = request.getReader();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            buffer.append(line);
+        // 使用getParameter方法接收数据
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+
+        // 进行用户验证（此处应替换为实际的验证逻辑）
+        boolean isValidUser = "admin".equals(username) && "123".equals(password);
+
+        try (PrintWriter out = response.getWriter()) {
+            if (isValidUser) {
+                // 认证成功
+                out.print("{\"success\": true, \"message\": \"Login successful\"}");
+            } else {
+                // 认证失败
+                out.print("{\"success\": false, \"message\": \"Invalid username or password\"}");
+            }
         }
-        out.println(buffer.toString());
-        // 将 buffer 转为 json 对象
-        JSONObject data = new JSONObject(buffer.toString());
-//        out.println(data);
-        String username = data.getString("username");
-        String password = data.getString("password");
-
-        // Dummy validation logic
-        boolean isValidUser = validateUser(username, password);
-
-        JSONObject jsonResponse = new JSONObject();
-        if (isValidUser) {
-            jsonResponse.put("success", true);
-
-            // If validation success
-            HttpSession session = request.getSession();
-            session.setAttribute("user", username);
-
-            // You might redirect or manage sessions here as per your logic
-        } else {
-            jsonResponse.put("success", false);
-            // In case of failure, you might want to add more info
-        }
-
-        // Output response
-        response.getWriter().write(jsonResponse.toString());
     }
-
-    // A sample user validation method
-    private boolean validateUser(String username, String password) {
-        // This is just a dummy validation. Replace it with your actual user validation logic.
-        return "admin".equals(username) && "123".equals(password);
-    }
-
-
-    // 一个示例的用户验证方法，实际中应该查询数据库或其他用户存储机制
-
 }
